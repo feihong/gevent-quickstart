@@ -1,3 +1,4 @@
+import gevent
 from flask import Flask, render_template
 from flask_sockets import Sockets
 
@@ -5,20 +6,42 @@ from flask_sockets import Sockets
 app = Flask(__name__)
 app.debug = True
 sockets = Sockets(app)
-
-
-@sockets.route('/echo')
-def echo_socket(ws):
-    print('Websocket opened')
-    while not ws.closed:
-        message = ws.receive()
-        ws.send(message[::-1])
-    print('Websocket closed')
+websockets = set()
 
 
 @app.route('/')
 def hello():
     return render_template('index.html')
+
+
+@app.route('/start-task')
+def start_task():
+    gevent.spawn(cool_task, 10)
+    print(sockets.url_map)
+    return 'ok'
+
+
+@sockets.route('/echo')
+def echo_socket(ws):
+    print('Websocket opened')
+    websockets.add(ws)
+
+    while not ws.closed:
+        message = ws.receive()
+        ws.send(message[::-1])
+
+    print('Websocket closed')
+    websockets.remove(ws)
+
+
+
+def cool_task(num_steps):
+    for i in range(1, num_steps+1):
+        # print('Task step {}'.format(i))
+        for ws in websockets:
+            ws.send('Task step {}'.format(i))
+        gevent.sleep(0.5)
+
 
 
 if __name__ == "__main__":

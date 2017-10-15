@@ -15,6 +15,7 @@ flask-sockets = "*"
 [dev-packages]
 
 ipython = "*"
+ipdb = "*"
 
 
 [requires]

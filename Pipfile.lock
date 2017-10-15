@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "2872808459cf1f7c19798d6395b8c491be0ab5e0bd019baf8e46faa13aa62063"
+            "sha256": "8da30ca60aa5f09cdb6207d2ce99871049b7cfa48be0c1e8fb1c751e1b6eee11"
         },
         "host-environment-markers": {
             "implementation_name": "pypy",
@@ -159,6 +159,12 @@
                 "sha256:7cb64d38cb8002971710c8899fbdfb859a23a364b7c99dab19d1f719c2ba16b5"
             ],
             "version": "==4.1.2"
+        },
+        "ipdb": {
+            "hashes": [
+                "sha256:9ea256b4280fbe12840fb9dfc3ce498c6c6de03352eca293e4400b0dfbed2b28"
+            ],
+            "version": "==0.10.3"
         },
         "ipython": {
             "hashes": [

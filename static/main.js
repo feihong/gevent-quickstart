@@ -12,3 +12,7 @@ socket.onmessage = evt => {
   console.log(evt.data)
   $('<p>').text(evt.data).appendTo('#results')
 }
+
+$('button').on('click', () => {
+  $.get('/start-task', evt => console.log(evt.data))
+})
