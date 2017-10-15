@@ -6,19 +6,20 @@
     <title>Gevent Quickstart</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'>
+    <link rel='stylesheet' href='/static/styles.css'>
   </head>
   <body class='container'>
-    <h1>Gevent Quickstart</h1>
+    <header>
+      <div>
+        <button class='btn btn-primary'>Start task</button>
+      </div>
 
-    <div>
-      <button>Start task</button>
-    </div>
-    
-    <form>
-      <input placeholder='Type a message' autofocus>
-    </form>
+      <form>
+        <input placeholder='Type a message' autofocus>
+      </form>
+    </header>
 
-    <div id='results'></div>
+    <div id='output'></div>
 
     <!-- SCRIPTS -->
     <script src='https://code.jquery.com/jquery-3.1.1.min.js'></script>

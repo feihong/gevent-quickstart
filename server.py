@@ -47,5 +47,7 @@ def cool_task(num_steps):
 if __name__ == "__main__":
     from gevent import pywsgi
     from geventwebsocket.handler import WebSocketHandler
-    server = pywsgi.WSGIServer(('', 8000), app, handler_class=WebSocketHandler)
+    port = 8000
+    server = pywsgi.WSGIServer(('', port), app, handler_class=WebSocketHandler)
+    print('Starting server on port {}'.format(port))
     server.serve_forever()
