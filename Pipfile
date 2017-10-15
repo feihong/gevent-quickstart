@@ -10,6 +10,7 @@ name = "pypi"
 gevent = "*"
 flask = "*"
 flask-sockets = "*"
+requests = "*"
 
 
 [dev-packages]

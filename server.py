@@ -1,4 +1,7 @@
 import gevent
+import gevent.monkey
+gevent.monkey.patch_socket()
+import requests
 from flask import Flask, render_template
 from flask_sockets import Sockets
 
@@ -39,6 +42,7 @@ def big_task():
     gevent.joinall([
         gevent.spawn(cool_task, 8),
         gevent.spawn(boring_task, 4),
+        gevent.spawn(get_ip_address),
     ])
     broadcast('Work is done!!!')
 
@@ -53,6 +57,11 @@ def boring_task(num_steps):
     for i in range(1, num_steps+1):
         broadcast('Boring task step {}'.format(i))
         gevent.sleep(1.2)
+
+
+def get_ip_address():
+    text = requests.get('http://ipecho.net/plain').text
+    broadcast('Your IP address is {}'.format(text))
 
 
 def broadcast(message):
