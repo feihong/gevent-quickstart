@@ -16,7 +16,7 @@ def hello():
 
 @app.route('/start-task')
 def start_task():
-    gevent.spawn(cool_task, 8)
+    gevent.spawn(big_task)
     return 'ok'
 
 
@@ -35,13 +35,29 @@ def echo_socket(ws):
     app.websockets.remove(ws)
 
 
+def big_task():
+    gevent.joinall([
+        gevent.spawn(cool_task, 8),
+        gevent.spawn(boring_task, 4),
+    ])
+    broadcast('Work is done!!!')
+
 
 def cool_task(num_steps):
     for i in range(1, num_steps+1):
-        for ws in app.websockets:
-            ws.send('Task step {}'.format(i))
+        broadcast('Cool task step {}'.format(i))
         gevent.sleep(0.5)
 
+
+def boring_task(num_steps):
+    for i in range(1, num_steps+1):
+        broadcast('Boring task step {}'.format(i))
+        gevent.sleep(1.2)
+
+
+def broadcast(message):
+    for ws in app.websockets:
+        ws.send(message)
 
 
 if __name__ == "__main__":
