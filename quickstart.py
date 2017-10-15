@@ -1,21 +1,24 @@
-from flask import Flask
+from flask import Flask, render_template
 from flask_sockets import Sockets
 
 
 app = Flask(__name__)
+app.debug = True
 sockets = Sockets(app)
 
 
 @sockets.route('/echo')
 def echo_socket(ws):
+    print('Websocket opened')
     while not ws.closed:
         message = ws.receive()
-        ws.send(message)
+        ws.send(message[::-1])
+    print('Websocket closed')
 
 
 @app.route('/')
 def hello():
-    return 'Hello World!'
+    return render_template('index.html')
 
 
 if __name__ == "__main__":
