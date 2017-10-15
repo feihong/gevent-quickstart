@@ -16,7 +16,7 @@ def hello():
 
 @app.route('/start-task')
 def start_task():
-    gevent.spawn(cool_task, 10)
+    gevent.spawn(cool_task, 8)
     return 'ok'
 
 
@@ -30,6 +30,7 @@ def echo_socket(ws):
         if message is not None:
             reverse = message[::-1]
             ws.send('{} | {}'.format(message, reverse))
+
     print('Websocket closed')
     app.websockets.remove(ws)
 
