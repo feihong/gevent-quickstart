@@ -28,8 +28,8 @@ def echo_socket(ws):
 
     while not ws.closed:
         message = ws.receive()
-        ws.send(message[::-1])
-
+        reverse = message[::-1]
+        ws.send('{} | {}'.format(message, reverse))
     print('Websocket closed')
     websockets.remove(ws)
 
