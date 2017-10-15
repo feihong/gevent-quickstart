@@ -6,7 +6,7 @@ from flask_sockets import Sockets
 app = Flask(__name__)
 app.debug = True
 sockets = Sockets(app)
-websockets = set()
+app.websockets = set()
 
 
 @app.route('/')
@@ -23,7 +23,7 @@ def start_task():
 @sockets.route('/echo')
 def echo_socket(ws):
     print('Websocket opened')
-    websockets.add(ws)
+    app.websockets.add(ws)
 
     while not ws.closed:
         message = ws.receive()
@@ -31,14 +31,13 @@ def echo_socket(ws):
             reverse = message[::-1]
             ws.send('{} | {}'.format(message, reverse))
     print('Websocket closed')
-    websockets.remove(ws)
+    app.websockets.remove(ws)
 
 
 
 def cool_task(num_steps):
     for i in range(1, num_steps+1):
-        # print('Task step {}'.format(i))
-        for ws in websockets:
+        for ws in app.websockets:
             ws.send('Task step {}'.format(i))
         gevent.sleep(0.5)
 
