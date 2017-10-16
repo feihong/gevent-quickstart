@@ -1,6 +1,9 @@
-import gevent
 import gevent.monkey
 gevent.monkey.patch_socket()
+
+import itertools
+import gevent
+import gevent.event
 import requests
 from flask import Flask, render_template
 from flask_sockets import Sockets
@@ -10,6 +13,7 @@ app = Flask(__name__)
 app.debug = True
 sockets = Sockets(app)
 app.websockets = set()
+heartbeat_evt = gevent.event.Event()
 
 
 @app.route('/')
@@ -20,6 +24,15 @@ def hello():
 @app.route('/start-task')
 def start_task():
     gevent.spawn(big_task)
+    return 'ok'
+
+
+@app.route('/toggle-beat')
+def toggle_beat():
+    if heartbeat_evt.is_set():
+        heartbeat_evt.clear()
+    else:
+        heartbeat_evt.set()
     return 'ok'
 
 
@@ -64,6 +77,13 @@ def get_ip_address():
     broadcast('Your IP address is {}'.format(text))
 
 
+def heart_beat():
+    for i in itertools.count(1):
+        heartbeat_evt.wait()
+        broadcast('Heartbeat {}'.format(i))
+        gevent.sleep(1)
+
+
 def broadcast(message):
     for ws in app.websockets:
         ws.send(message)
@@ -72,6 +92,7 @@ def broadcast(message):
 if __name__ == "__main__":
     from gevent import pywsgi
     from geventwebsocket.handler import WebSocketHandler
+    gevent.spawn(heart_beat)
     port = 8000
     server = pywsgi.WSGIServer(('', port), app, handler_class=WebSocketHandler)
     print('Starting server on port {}'.format(port))

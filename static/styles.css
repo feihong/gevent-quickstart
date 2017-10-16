@@ -9,6 +9,10 @@ body {
   height: 100%;
 }
 
+#buttons {
+  margin: 1rem 0;
+}
+
 #output {
   flex: 1;
   color: lightgreen;

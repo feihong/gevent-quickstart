@@ -14,6 +14,14 @@ socket.onmessage = evt => {
   output.scrollTop(para.offset().top - output.offset().top + output.scrollTop())
 }
 
-$('button').on('click', () => {
+$('button.task').on('click', () => {
   $.get('/start-task', data => console.log(data))
+})
+
+$('button.info').on('click', () => {
+  $.getJSON('/get-info', data => console.log(data))
+})
+
+$('button.beat').on('click', () => {
+  $.get('/toggle-beat', data => console.log(data))  
 })
