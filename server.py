@@ -6,7 +6,7 @@ import itertools
 import gevent
 import gevent.event
 import requests
-from flask import Flask, render_template
+from flask import Flask, render_template, jsonify
 from flask_sockets import Sockets
 
 
@@ -35,6 +35,18 @@ def toggle_beat():
     else:
         heartbeat_evt.set()
     return 'ok'
+
+
+@app.route('/get-info')
+def get_info():
+    import sys
+    import greenlet
+
+    return jsonify({
+        'Greenlet location': greenlet.__file__,
+        'Python version': sys.version,
+        'Socket module is patched?': gevent.monkey.is_module_patched('socket'),
+    })
 
 
 @sockets.route('/echo')

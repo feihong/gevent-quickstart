@@ -18,15 +18,19 @@ function getColor(source) {
   }
 }
 
+function log(data) {
+  let output = $('#output')
+  let para = $('<p>').text(data.value).appendTo(output)
+  para.css('color', getColor(data.src))
+  output.scrollTop(para.offset().top - output.offset().top + output.scrollTop())
+}
+
 let socket = new WebSocket('ws://' + location.host + '/echo')
 socket.onopen = () => socket.send('Hello Websocket!')
 
 socket.onmessage = evt => {
-  let output = $('#output')
   let data = JSON.parse(evt.data)
-  let para = $('<p>').text(data.value).appendTo(output)
-  para.css('color', getColor(data.src))
-  output.scrollTop(para.offset().top - output.offset().top + output.scrollTop())
+  log(data)
 }
 
 $('button.task').on('click', () => {
@@ -34,7 +38,11 @@ $('button.task').on('click', () => {
 })
 
 $('button.info').on('click', () => {
-  $.getJSON('/get-info', data => console.log(data))
+  $.getJSON('/get-info', data => {
+    for (let [key, val] of Object.entries(data)) {
+      log({value: `${key}: ${val}`, src: 'info'})
+    }
+  })
 })
 
 $('button.beat').on('click', () => {
