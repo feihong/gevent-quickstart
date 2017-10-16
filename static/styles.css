@@ -15,7 +15,6 @@ body {
 
 #output {
   flex: 1;
-  color: lightgreen;
   font-family: monospace;
   background-color: black;
   padding: 0.5rem 1rem;

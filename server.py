@@ -1,6 +1,7 @@
 import gevent.monkey
 gevent.monkey.patch_socket()
 
+import json
 import itertools
 import gevent
 import gevent.event
@@ -45,7 +46,7 @@ def echo_socket(ws):
         message = ws.receive()
         if message is not None:
             reverse = message[::-1]
-            ws.send('{} | {}'.format(message, reverse))
+            broadcast('{} | {}'.format(message, reverse), src='echo')
 
     print('Websocket closed')
     app.websockets.remove(ws)
@@ -57,36 +58,37 @@ def big_task():
         gevent.spawn(boring_task, 4),
         gevent.spawn(get_ip_address),
     ])
-    broadcast('Work is done!!!')
+    broadcast('Work is done!!!', src='big')
 
 
 def cool_task(num_steps):
     for i in range(1, num_steps+1):
-        broadcast('Cool task step {}'.format(i))
+        broadcast('Cool task step {}'.format(i), src='cool')
         gevent.sleep(0.5)
 
 
 def boring_task(num_steps):
     for i in range(1, num_steps+1):
-        broadcast('Boring task step {}'.format(i))
+        broadcast('Boring task step {}'.format(i), src='boring')
         gevent.sleep(1.2)
 
 
 def get_ip_address():
     text = requests.get('http://ipecho.net/plain').text
-    broadcast('Your IP address is {}'.format(text))
+    broadcast('Your IP address is {}'.format(text), src='ip')
 
 
 def heart_beat():
     for i in itertools.count(1):
         heartbeat_evt.wait()
-        broadcast('Heartbeat {}'.format(i))
+        broadcast('Heartbeat {}'.format(i), src='heartbeat')
         gevent.sleep(1)
 
 
-def broadcast(message):
+def broadcast(message, src=''):
+    data = json.dumps(dict(value=message, src=src))
     for ws in app.websockets:
-        ws.send(message)
+        ws.send(data)
 
 
 if __name__ == "__main__":
